@@ -8,29 +8,33 @@
 
 import SwiftUI
 
-struct SecondView: View {
-    
-    @Environment(\.presentationMode) var presentationMode
-    var name: String
-    
-    var body: some View {
-        Button("Hello \(name), Tap to Dismiss!"){
-            self.presentationMode.wrappedValue.dismiss()
-        }
-
-    }
-}
 struct ContentView: View {
     
-    @State private var isShowing = false
+    @State private var numbers = [Int]()
+    @State private var currentNumber = 1
     
     var body: some View {
-        Button("Main view") {
-            self.isShowing.toggle()
+        NavigationView {
+        
+            VStack {
+                List {
+                    ForEach(numbers, id: \.self) {
+                        Text("\($0)")
+                    }
+                    .onDelete(perform: removeRows)
+                }
+                
+                Button("Add number") {
+                    self.numbers.append(self.currentNumber)
+                    self.currentNumber += 1
+                }
+            }
+        .navigationBarItems(trailing: EditButton())
         }
-        .sheet(isPresented: $isShowing) {
-            SecondView(name: "Bill")
-        }
+    }
+    
+    func removeRows(at offsets: IndexSet) {
+        numbers.remove(atOffsets: offsets)
     }
 }
 
